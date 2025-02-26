@@ -1,32 +1,35 @@
 'use strict';
 
+// добавилось после авторизации
+const { response } = require("express");
+
 //объект пользователя
 const userLog = new UserForm();
 
-//объект с логином и паролем - консоль сообщает 'form is not defined'
-const data = userLog.getData(form); 
-
- //функция должна передаваться после авторизации - какая сущность и результат?
-collback = () => {
-    return console.log('запрос выполнен');
+// запрос на сервер на авторизацию
+userLog.loginFormCallback = (data) => {
+    ApiConnector.login(data, (response) => {
+        console.log(response);
+    })
 }
 
-// запрос на сервер на авторизацию
-userLog.loginFormCallback = (data, collback) => ApiConnector.login(data, collback);
-
 // проверка авторизации
-if(userLog.loginFormCallback) {
+if(response.success) {
     location.reload();
 } else {
-    userLog.setLoginErrorMessage();
+    setLoginErrorMessage();
 }
 
 // запрос на сервер на регистрацию
-userLog.registerFormCallback = (data, collback) => ApiConnector.register(data, collback);
+userLog.registerFormCallback = (data) => {
+    ApiConnector.register(data, (response) => {
+        console.log(response);
+    })
+} 
 
-// проверка регистрации
-if(userLog.registerFormCallback) {
+// проверка авторизации
+if(response.success) {
     location.reload();
 } else {
-    userLog.setRegisterErrorMessage();
+    setRegisterErrorMessage();
 }
