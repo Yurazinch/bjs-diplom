@@ -1,10 +1,8 @@
-const { response } = require("express");
-
 // объект для выхода из личного кабинета
 const logoutUser = new LogoutButton();
 
-logoutUser.action = (callback) => {
-    ApiConnector.logout(callback, (response) => {
+logoutUser.action = () => {
+    ApiConnector.logout(response => {
         if(response.success) {
             location.reload();
         }
@@ -12,10 +10,21 @@ logoutUser.action = (callback) => {
 }
 
 // получение информации о пользователе
-ApiConnector.current(callback, (response) => {
+ApiConnector.current(response => {
     if(response.success) {
-        ProfileWidget.showProfile(response);
+        ProfileWidget.showProfile(userId);
     }
 });
 
-    
+// получение текущих курсов валют
+const rates = new RatesBoard();
+
+requestCourses = (data) => ApiConnector.getStocks(response => {
+    if(response.success) {
+        rates.clearTable();
+        rates.fillTable(data);
+    }
+});
+
+setInterval(requestCourses(), 1000);
+
