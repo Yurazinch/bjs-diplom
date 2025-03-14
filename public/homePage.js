@@ -10,20 +10,24 @@ logoutUser.action = () => {
 }
 
 // получение информации о пользователе
-ApiConnector.current(data => {
-    if(result) {
-        ProfileWidget.showProfile(data);
+ApiConnector.current((response) => {
+    console.log(response);
+    if(response.success) {
+        ProfileWidget.showProfile(response.data);
     }
 });
 
 // получение текущих курсов валют
 const rates = new RatesBoard();
 
-requestCourses = (data) => ApiConnector.getStocks(result => {
-    if(result) {
-        rates.clearTable();
-        rates.fillTable(data);
+requestCourses = () => { 
+    ApiConnector.getStocks(() => {
+    console.log(response);
+    if(response.success) {
+        rates.cleartable();
+        rates.fillTable(response.data);
     }
 });
-setInterval(requestCourses(), 1000);
+}
+setInterval(requestCourses, 60000);
 

@@ -9,19 +9,20 @@ userLog.loginFormCallback = (data) => {
         console.log(response); 
         if(response.success) {
             location.reload();
-        }       
-    })
-    this.setLoginErrorMessage(error);
+        } else {
+            userLog.setLoginErrorMessage(response.error);  
+        } 
+    })    
 }
 
 // запрос на сервер на регистрацию
 userLog.registerFormCallback = (data) => {
     ApiConnector.register(data, (response) => {
         console.log(response);
-        if(responce.ok) {
+        if(response.success) {
             location.reload();
         } else {
-            userLog.setRegisterErrorMessage(error);
+            userLog.setRegisterErrorMessage(response.error);
         }
     })
 } 
