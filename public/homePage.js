@@ -11,7 +11,6 @@ logoutUser.action = () => {
 
 // получение информации о пользователе
 ApiConnector.current((response) => {
-    console.log(response);
     if(response.success) {
         ProfileWidget.showProfile(response.data);
     }
@@ -19,15 +18,51 @@ ApiConnector.current((response) => {
 
 // получение текущих курсов валют
 const rates = new RatesBoard();
-
 requestCourses = () => { 
-    ApiConnector.getStocks(() => {
-    console.log(response);
+    ApiConnector.getStocks((response) => {
     if(response.success) {
-        rates.cleartable();
+        rates.clearTable();
         rates.fillTable(response.data);
     }
 });
 }
+requestCourses();
 setInterval(requestCourses, 60000);
+
+// операции с деньгами - пополнение баланса
+const moneyMgr = new MoneyManager();
+addMoneyCallback = () => {
+    ApiConnector.addMoney((response) => {
+        console.log(response);
+        if(response.success) {
+            moneyMgr.showProfile(response.data);
+            moneyMgr.setMessage(response.success);
+        }
+        moneyMgr.setMessage(response.error());        
+    })
+}
+
+// операции с деньгами - конвертирование валюты
+conversionMoneyCallback = () => {
+    ApiConnector.convertMoney((response) => {
+        console.log(response);
+        if(response.success) {
+            moneyMgr.showProfile(response.data);
+            moneyMgr.setMessage(response.success);
+        }
+        moneyMgr.setMessage(response.error());
+    })
+}
+
+// операции с деньгами - перевод валюты
+sendMoneyCallback = () => {
+    ApiConnector.transferMoney((response) => {
+        console.log(response);
+        if(response.success) {
+            moneyMgr.showProfile(response.data);
+            moneyMgr.setMessage(response.success);
+        }
+        moneyMgr.setMessage(response.error());
+    })
+}
 
