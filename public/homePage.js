@@ -29,40 +29,72 @@ requestCourses = () => {
 requestCourses();
 setInterval(requestCourses, 60000);
 
-// операции с деньгами - пополнение баланса
 const moneyMgr = new MoneyManager();
-addMoneyCallback = () => {
-    ApiConnector.addMoney((response) => {
-        console.log(response);
+
+// операции с деньгами - пополнение баланса
+moneyMgr.addMoneyCallback = (data) => {
+    ApiConnector.addMoney(data, response => {        
         if(response.success) {
-            moneyMgr.showProfile(response.data);
+            ProfileWidget.showProfile(response.data);
             moneyMgr.setMessage(response.success);
         }
-        moneyMgr.setMessage(response.error());        
+        moneyMgr.setMessage(response.error);        
     })
 }
 
 // операции с деньгами - конвертирование валюты
-conversionMoneyCallback = () => {
-    ApiConnector.convertMoney((response) => {
-        console.log(response);
+moneyMgr.conversionMoneyCallback = (data) => {
+    ApiConnector.convertMoney(data, response => {        
         if(response.success) {
-            moneyMgr.showProfile(response.data);
+            ProfileWidget.showProfile(response.data);
             moneyMgr.setMessage(response.success);
         }
-        moneyMgr.setMessage(response.error());
+        moneyMgr.setMessage(response.error);
     })
 }
 
 // операции с деньгами - перевод валюты
-sendMoneyCallback = () => {
-    ApiConnector.transferMoney((response) => {
-        console.log(response);
+moneyMgr.sendMoneyCallback = (data) => {
+    ApiConnector.transferMoney(data, response => {
         if(response.success) {
-            moneyMgr.showProfile(response.data);
+            ProfileWidget.showProfile(response.data);
             moneyMgr.setMessage(response.success);
         }
-        moneyMgr.setMessage(response.error());
+        moneyMgr.setMessage(response.error);
     })
 }
 
+const favorites = new FavoritesWidget();
+
+// начальный список избранного
+ApiConnector.getFavorites = (data, response) => {
+    console.log(response);
+    if(response.success) {
+        favorites.clearTable();
+        favorites.fillTable(response.data);
+        moneyMgr.updateUsersList(data);
+    }    
+       
+}
+
+// добавления пользователя в список избранных
+favorites.addUserCallback = (data) => {
+    ApiConnector.addUserToFavorites(data, response => {
+        if(response.success) {
+            favorites.clearTable();
+            favorites.fillTable(response.data);
+            moneyMgr.updateUsersList(data);
+        }        
+    })
+}
+
+// удаление пользователя из избранного
+favorites.removeUserCallback = (data) => {
+    ApiConnector.removeUserFromFavorites(data, response => {
+        if(response.success) {
+            favorites.clearTable();
+            favorites.fillTable(response.data);
+            moneyMgr.updateUsersList(data);
+        }
+    })
+}
