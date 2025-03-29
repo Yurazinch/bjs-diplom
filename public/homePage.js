@@ -56,26 +56,26 @@ moneyMgr.conversionMoneyCallback = (data) => {
 // операции с деньгами - перевод валюты
 moneyMgr.sendMoneyCallback = (data) => {
     ApiConnector.transferMoney(data, response => {
+        console.log(response);
         if(response.success) {
             ProfileWidget.showProfile(response.data);
-            moneyMgr.setMessage(response.success);
+            moneyMgr.setMessage(response.success, 'Деньги переведены');
+        } else {
+            moneyMgr.setMessage(response.error, 'Ошибка, проверьте данные');
         }
-        moneyMgr.setMessage(response.error);
     })
 }
 
 const favorites = new FavoritesWidget();
 
 // начальный список избранного
-ApiConnector.getFavorites = (data, response) => {
-    console.log(response);
+ApiConnector.getFavorites((response) => {
     if(response.success) {
         favorites.clearTable();
         favorites.fillTable(response.data);
-        moneyMgr.updateUsersList(data);
-    }    
-       
-}
+        moneyMgr.updateUsersList(response.data);
+    }       
+})
 
 // добавления пользователя в список избранных
 favorites.addUserCallback = (data) => {
@@ -83,8 +83,11 @@ favorites.addUserCallback = (data) => {
         if(response.success) {
             favorites.clearTable();
             favorites.fillTable(response.data);
-            moneyMgr.updateUsersList(data);
-        }        
+            moneyMgr.updateUsersList(response.data);
+            favorites.setMessage(response.success, 'Добавлен в список избранных');
+        } else {
+            favorites.setMessage(response.error, 'Ошибка, проверьте данные');  
+        }      
     })
 }
 
@@ -94,7 +97,10 @@ favorites.removeUserCallback = (data) => {
         if(response.success) {
             favorites.clearTable();
             favorites.fillTable(response.data);
-            moneyMgr.updateUsersList(data);
+            moneyMgr.updateUsersList(response.data);
+            favorites.setMessage(response.success, 'Удален из списка избранных');
+        } else {
+            favorites.setMessage(response.error, 'Ошибка, проверьте данные');
         }
     })
 }
