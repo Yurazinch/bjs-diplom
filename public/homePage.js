@@ -36,20 +36,23 @@ moneyMgr.addMoneyCallback = (data) => {
     ApiConnector.addMoney(data, response => {        
         if(response.success) {
             ProfileWidget.showProfile(response.data);
-            moneyMgr.setMessage(response.success);
-        }
-        moneyMgr.setMessage(response.error);        
+            moneyMgr.setMessage(response.success, 'Баланс пополнен');
+        } else {
+            moneyMgr.setMessage(response.success, response.error);
+        }        
     })
 }
 
 // операции с деньгами - конвертирование валюты
 moneyMgr.conversionMoneyCallback = (data) => {
-    ApiConnector.convertMoney(data, response => {        
+    ApiConnector.convertMoney(data, response => {  
+        console.log(response);
         if(response.success) {
             ProfileWidget.showProfile(response.data);
-            moneyMgr.setMessage(response.success);
+            moneyMgr.setMessage(response.success, 'Конвертация выполнена');
+        } else {
+            moneyMgr.setMessage(response.success, response.error);
         }
-        moneyMgr.setMessage(response.error);
     })
 }
 
@@ -61,7 +64,7 @@ moneyMgr.sendMoneyCallback = (data) => {
             ProfileWidget.showProfile(response.data);
             moneyMgr.setMessage(response.success, 'Деньги переведены');
         } else {
-            moneyMgr.setMessage(response.error, 'Ошибка, проверьте данные');
+            moneyMgr.setMessage(response.success, response.error);
         }
     })
 }
@@ -86,7 +89,7 @@ favorites.addUserCallback = (data) => {
             moneyMgr.updateUsersList(response.data);
             favorites.setMessage(response.success, 'Добавлен в список избранных');
         } else {
-            favorites.setMessage(response.error, 'Ошибка, проверьте данные');  
+            favorites.setMessage(response.success, response.error);  
         }      
     })
 }
@@ -100,7 +103,7 @@ favorites.removeUserCallback = (data) => {
             moneyMgr.updateUsersList(response.data);
             favorites.setMessage(response.success, 'Удален из списка избранных');
         } else {
-            favorites.setMessage(response.error, 'Ошибка, проверьте данные');
+            favorites.setMessage(response.success, response.error);
         }
     })
 }
